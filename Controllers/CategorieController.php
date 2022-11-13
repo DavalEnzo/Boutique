@@ -25,29 +25,40 @@ class CategorieController extends CategorieManager
         }
     }
 
-    public function save($post){
-        if($this->isValid($post)){
-            if($this->addCategorie($post['nom']) > 0){
-                header('Location: ?page=categories&success=1');
-            } else {
-                header('Location: ?page=categories&success=0');
+    public function save($post)
+    {
+        if (isset($_SESSION["utilisateur"]) && !empty($_SESSION["utilisateur"]) && $_SESSION["utilisateur"]['role'] == 2) {
+            if ($this->isValid($post)) {
+                if ($this->addCategorie($post['nom']) > 0) {
+                    header('Location: ?page=categories&success=1');
+                } else {
+                    header('Location: ?page=categories&success=0');
+                }
             }
+        } else {
+            header('Location: ?page=categories&authorization=refused');
         }
     }
 
-    public function update($id){
-        ob_start();
+    public function update($id)
+    {
+        if (isset($_SESSION["utilisateur"]) && !empty($_SESSION["utilisateur"]) && $_SESSION["utilisateur"]['role'] == 2) {
+            ob_start();
 
-        $categorie = $this->getOneById($id);
+            $categorie = $this->getOneById($id);
 
-        require_once 'Views/categories/form.php';
-        $page = ob_get_clean();
-        return $page;
+            require_once 'Views/categories/form.php';
+            $page = ob_get_clean();
+            return $page;
+        } else {
+            header('Location: ?page=categories&authorization=refused');
+        }
     }
 
-    public function persistUpdate($id ,$post) {
-        if($this->isValid($post)){
-            if($this->updateCategorie($id, $post['nom']) > 0){
+    public function persistUpdate($id, $post)
+    {
+        if ($this->isValid($post)) {
+            if ($this->updateCategorie($id, $post['nom']) > 0) {
                 header('Location: ?page=categories&success=2');
             } else {
                 header('Location: ?page=categories&success=0');
@@ -55,19 +66,28 @@ class CategorieController extends CategorieManager
         }
     }
 
-    public function delete($id){
-        if($this->deleteCategorie($id) > 0){
-            header('Location: ?page=categories&success=3');
+    public function delete($id)
+    {
+        if (isset($_SESSION["utilisateur"]) && !empty($_SESSION["utilisateur"]) && $_SESSION["utilisateur"]['role'] == 2) {
+            if ($this->deleteCategorie($id) > 0) {
+                header('Location: ?page=categories&success=3');
+            } else {
+                header('Location: ?page=categories&success=0');
+            }
         } else {
-            header('Location: ?page=categories&success=0');
+            header('Location: ?page=categories&authorization=refused');
         }
     }
 
     public function getForm()
     {
-        ob_start();
-        require_once 'Views/categories/form.php';
-        $page = ob_get_clean();
-        return $page;
+        if (isset($_SESSION["utilisateur"]) && !empty($_SESSION["utilisateur"]) && $_SESSION["utilisateur"]['role'] == 2) {
+            ob_start();
+            require_once 'Views/categories/form.php';
+            $page = ob_get_clean();
+            return $page;
+        } else {
+            header('Location: ?page=categories&authorization=refused');
+        }
     }
 }

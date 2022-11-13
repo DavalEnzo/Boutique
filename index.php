@@ -1,9 +1,6 @@
 <?php
 session_start();
-
-var_dump($_SESSION);
 ?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -17,7 +14,7 @@ var_dump($_SESSION);
 <body>
 <header>
     <nav class="relative px-4 py-4 flex justify-center items-center bg-orange-800">
-        <div class="w-48"></div>
+        <div class="w-2"></div>
         <ul class="w-6/12 flex items-center justify-center space-x-6">
             <li><a class="text-gray-400 hover:text-gray-500" href="?page=produits">Accueil</a></li>
             <li class="text-gray-300">
@@ -28,41 +25,47 @@ var_dump($_SESSION);
                 </svg>
             </li>
             <li><a class="text-gray-400 hover:text-gray-500" href="?page=categories">Catégories</a></li>
-            <li class="text-gray-300">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" class="w-4 h-4 current-fill"
-                     viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
-                </svg>
-            </li>
-            <li><a class="text-gray-400 hover:text-gray-500" href="#">Comptes</a></li>
         </ul>
         <?php
         if (isset($_SESSION['utilisateur']) && !empty($_SESSION["utilisateur"])) {
-            ?>
+        ?>
+        <div>
             <div>
-            <a type="button"
-               href="?page=liste_utilisateurs"
-               class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
-                Liste d'utilisateurs
-            </a>
-            <?php
-        } else {
-            ?>
-            <a type="button"
-               class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-2 py-1 text-center mr-2"
-               href="?page=connexion">
-                Connexion
-            </a>
-            <a type="button"
-               href="?page=inscription"
-               class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-2 py-1 text-center">
-                Inscription
-            </a>
+
+                <?php
+                if ($_SESSION["utilisateur"]["role"] == 2) {
+                    ?>
+                    <a type="button"
+                       href="?page=liste_utilisateurs"
+                       class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+                        Liste d'utilisateurs
+                    </a>
+                    <?php
+                }
+                ?>
+
+                <a type="button"
+                   href="?page=deconnexion"
+                   class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+                    Déconnexion
+                </a>
+                <?php
+                } else {
+                ?>
+                <a type="button"
+                   class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-2 py-1 text-center mr-2"
+                   href="?page=connexion">
+                    Connexion
+                </a>
+                <a type="button"
+                   href="?page=inscription"
+                   class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-2 py-1 text-center">
+                    Inscription
+                </a>
             </div>
             <?php
-        }
-        ?>
+            }
+            ?>
     </nav>
 </header>
 
@@ -70,6 +73,61 @@ var_dump($_SESSION);
 
 require_once 'Class/Autoload.php';
 Autoload::load();
+
+if (isset($_GET['connexion'])) {
+    if ($_GET['connexion'] == 1) {
+        ?>
+        <div class="flex p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800"
+             role="alert">
+            <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20"
+                 xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                      clip-rule="evenodd"></path>
+            </svg>
+            <span class="sr-only">Info</span>
+            <div>
+                <span class="font-medium">Bienvenue ! <?= $_SESSION["utilisateur"]["prenom"]; ?> <?= $_SESSION["utilisateur"]["nom"]; ?></span>
+                Vous êtes connecté.
+            </div>
+        </div>
+        <?php
+    } else {
+        ?>
+        <div class="flex p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800"
+             role="alert">
+            <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20"
+                 xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                      clip-rule="evenodd"></path>
+            </svg>
+            <span class="sr-only">Info</span>
+            <div>
+                <span class="font-medium">Erreur: </span> connexion impossible.
+            </div>
+        </div>
+        <?php
+    }
+}
+
+if (isset($_GET['authorization']) && $_GET['authorization'] == "refused") {
+    ?>
+    <div class="flex p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800"
+         role="alert">
+        <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20"
+             xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                  clip-rule="evenodd"></path>
+        </svg>
+        <span class="sr-only">Info</span>
+        <div>
+            <span class="font-medium">Non autorisé: </span> vous n'êtes pas autorisé à accéder à cette page.
+        </div>
+    </div>
+    <?php
+}
 
 if (isset($_GET['page'])) {
     switch ($_GET["page"]) {
@@ -186,7 +244,41 @@ if (isset($_GET['page'])) {
         case "liste_utilisateurs":
 
             $controller = new UtilisateurController();
-            $controller->findAll();
+            echo $controller->findAll();
+            break;
+
+        case "deconnexion":
+
+            $controller = new UtilisateurController();
+            $controller->deconnexion();
+            break;
+
+        case "modifier_utilisateur":
+
+            $controller = new UtilisateurController();
+
+            if (isset($_GET["id"]) && !empty($_GET["id"])) {
+                if (!empty($_POST)) {
+                    $controller->persistUpdate($_GET["id"], $_POST);
+                } else {
+                    echo $controller->update($_GET["id"]);
+                }
+            } else {
+                echo '<div class="flex p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800"
+             role="alert">
+            <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20"
+                 xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                      clip-rule="evenodd"></path>
+            </svg>
+            <span class="sr-only">Info</span>
+            <div>
+                <span class="font-medium">Erreur: </span> Utilisateur introuvable. Vous allez être redirigé vers la page d\'accueil.
+            </div>
+        </div>';
+                header("Refresh: 2; url=index.php?page=liste_utilisateurs");
+            }
             break;
 
         case "inscription":

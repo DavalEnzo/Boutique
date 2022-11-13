@@ -7,5 +7,7 @@
     <orderEntry type="library" name="inter" level="application" />
     <orderEntry type="library" name="flowbite" level="application" />
     <orderEntry type="library" name="all" level="application" />
+    <orderEntry type="library" name="inter" level="application" />
+    <orderEntry type="library" name="flowbite" level="application" />
   </component>
 </module>

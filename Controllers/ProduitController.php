@@ -28,6 +28,7 @@ class ProduitController extends ProduitManager
 
     public function getForm()
     {
+        if(isset($_SESSION["utilisateur"]) && !empty($_SESSION["utilisateur"]) && $_SESSION["utilisateur"]['role'] == 2){
         ob_start();
 
         $categoriesManager = new CategorieManager();
@@ -37,6 +38,9 @@ class ProduitController extends ProduitManager
         require_once 'Views/produits/form.php';
         $page = ob_get_clean();
         return $page;
+        }else{
+            header('Location: ?page=produits&authorization=refused');
+        }
     }
 
     public function validation($post)
@@ -54,6 +58,7 @@ class ProduitController extends ProduitManager
 
     public function update($id)
     {
+        if(isset($_SESSION["utilisateur"]) && !empty($_SESSION["utilisateur"]) && $_SESSION["utilisateur"]['role'] == 2){
         ob_start();
 
         $produit = $this->getOneById($id);
@@ -65,16 +70,23 @@ class ProduitController extends ProduitManager
         require_once 'Views/produits/form.php';
         $page = ob_get_clean();
         return $page;
+        } else {
+            header('Location: ?page=produits&authorization=refused');
+        }
     }
 
     public function save($post)
     {
-        if ($this->validation($post)) {
-            if ($this->addProduit($post["nom"], $post["prix"], $post["description"], $post["quantite"], $post["categorie"]) > 0) {
-                header("Location: ?page=produits&success=1");
-            } else {
-                header("Location: ?page=produits&success=0");
+        if(isset($_SESSION["utilisateur"]) && !empty($_SESSION["utilisateur"]) && $_SESSION["utilisateur"]['role'] == 2) {
+            if ($this->validation($post)) {
+                if ($this->addProduit($post["nom"], $post["prix"], $post["description"], $post["quantite"], $post["categorie"]) > 0) {
+                    header("Location: ?page=produits&success=1");
+                } else {
+                    header("Location: ?page=produits&success=0");
+                }
             }
+        } else {
+            header('Location: ?page=produits&authorization=refused');
         }
     }
 
@@ -91,10 +103,14 @@ class ProduitController extends ProduitManager
 
     public function delete($id)
     {
-        if ($this->deleteProduit($id) > 0) {
-            header("Location: index.php?page=produits&success=3");
-        } else {
-            header("Location: index.php?page=produits&success=4");
+        if(isset($_SESSION["utilisateur"]) && !empty($_SESSION["utilisateur"]) && $_SESSION["utilisateur"]['role'] == 2) {
+            if ($this->deleteProduit($id) > 0) {
+                header("Location: index.php?page=produits&success=3");
+            } else {
+                header("Location: index.php?page=produits&success=4");
+            }
+        }else{
+            header('Location: ?page=produits&authorization=refused');
         }
     }
 }

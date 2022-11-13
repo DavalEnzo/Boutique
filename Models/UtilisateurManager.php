@@ -5,11 +5,21 @@ class UtilisateurManager extends BDD
     public function getUtilisateurs()
     {
         $co = $this->getCo();
-        $req = $co->prepare("SELECT * FROM utilisateurs");
+        $req = $co->prepare("SELECT utilisateurs.id, nom, prenom, email, role_id, roles.role FROM utilisateurs LEFT JOIN roles ON utilisateurs.role_id = roles.id");
         $req->execute();
         $utilisateurs = $req->fetchAll();
 
         return $utilisateurs;
+    }
+
+    public function getRoles()
+    {
+        $co = $this->getCo();
+        $req = $co->prepare("SELECT * FROM roles");
+        $req->execute();
+        $roles = $req->fetchAll();
+
+        return $roles;
     }
 
     public function getOneById($id)
@@ -31,11 +41,11 @@ class UtilisateurManager extends BDD
         return $req->rowCount();
     }
 
-    public function updateUtilisateur($id, $nom, $prenom, $email, $mdp)
+    public function updateUtilisateurRole($id, $role)
     {
         $co = $this->getCo();
-        $req = $co->prepare("UPDATE utilisateurs SET nom = ?, prenom = ?, email = ?, mdp = ? WHERE id = ?");
-        $req->execute([$nom, $prenom, $email, $mdp, $id]);
+        $req = $co->prepare("UPDATE utilisateurs SET role_id = ? WHERE id = ?");
+        $req->execute([$role, $id]);
 
         return $req->rowCount();
     }
